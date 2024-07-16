@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Administrar Productos</h1>
+        <form id="productForm">
+            <label for="image">URL de la Imagen/Video:</label>
+            <input type="text" id="image" required>
+            <label for="description">Descripción:</label>
+            <input type="text" id="description" required>
+            <label for="category">Categoría:</label>
+            <select id="category" required>
+                <option value="categoria1">Categoría 1</option>
+                <option value="categoria2">Categoría 2</option>
+                <option value="categoria3">Categoría 3</option>
+            </select>
+            <button type="submit">Agregar Producto</button>
+        </form>
+        <h2>Eliminar Productos</h2>
+        <div class="products"></div>
+        <a href="index.html" class="admin-link">Volver al Catálogo</a>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
