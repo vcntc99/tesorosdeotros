@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Catálogo de Productos</h1>
+        <div class="filter">
+            <button onclick="filterProducts('all')">Todos</button>
+            <button onclick="filterProducts('categoria1')">Categoría 1</button>
+            <button onclick="filterProducts('categoria2')">Categoría 2</button>
+            <button onclick="filterProducts('categoria3')">Categoría 3</button>
+        </div>
+        <div class="products">
+            <div class="product" data-category="categoria1">
+                <img src="producto1.jpg" alt="Producto 1">
+                <p>Descripción del Producto 1</p>
+            </div>
+            <div class="product" data-category="categoria2">
+                <img src="producto2.jpg" alt="Producto 2">
+                <p>Descripción del Producto 2</p>
+            </div>
+            <div class="product" data-category="categoria3">
+                <img src="producto3.jpg" alt="Producto 3">
+                <p>Descripción del Producto 3</p>
+            </div>
+            <div class="product" data-category="categoria1">
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    Tu navegador no soporta la reproducción de videos.
+                </video>
+                <p>Descripción del Producto 4</p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
