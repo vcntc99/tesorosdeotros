@@ -5,20 +5,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageSource = document.getElementById('imageSource');
     const imageURL = document.getElementById('imageURL');
     const imageFile = document.getElementById('imageFile');
+    const imageFolder = document.getElementById('imageFolder');
     const preview = document.getElementById('preview');
-    
+
+    let folderFiles = [];
+    let currentFileIndex = 0;
+
     imageSource.addEventListener('change', () => {
         if (imageSource.value === 'url') {
             imageURL.style.display = 'block';
             document.getElementById('imageURLLabel').style.display = 'block';
             imageFile.style.display = 'none';
             document.getElementById('imageFileLabel').style.display = 'none';
+            imageFolder.style.display = 'none';
+            document.getElementById('imageFolderLabel').style.display = 'none';
             preview.innerHTML = '';
-        } else {
+        } else if (imageSource.value === 'local') {
             imageURL.style.display = 'none';
             document.getElementById('imageURLLabel').style.display = 'none';
             imageFile.style.display = 'block';
             document.getElementById('imageFileLabel').style.display = 'block';
+            imageFolder.style.display = 'none';
+            document.getElementById('imageFolderLabel').style.display = 'none';
+            preview.innerHTML = '';
+        } else {
+            imageURL.style.display = 'none';
+            document.getElementById('imageURLLabel').style.display = 'none';
+            imageFile.style.display = 'none';
+            document.getElementById('imageFileLabel').style.display = 'none';
+            imageFolder.style.display = 'block';
+            document.getElementById('imageFolderLabel').style.display = 'block';
             preview.innerHTML = '';
         }
     });
@@ -61,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    imageFolder.addEventListener('change', () => {
+        folderFiles = Array.from(imageFolder.files);
+        currentFileIndex = 0;
+        showFolderImage();
+    });
+
     if (productForm) {
         productForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -68,6 +90,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function showFolderImage() {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';
+    if (folderFiles.length > 0) {
+        const file = folderFiles[currentFileIndex];
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            if (file.type.startsWith('video')) {
+                const videoElement = document.createElement('video');
+                videoElement.setAttribute('controls', '');
+                videoElement.setAttribute('src', e.target.result);
+                preview.appendChild(videoElement);
+            } else {
+                const imgElement = document.createElement('img');
+                imgElement.setAttribute('src', e.target.result);
+                preview.appendChild(imgElement);
+            }
+            addNavigationButtons();
+        };
+        fileReader.readAsDataURL(file);
+    }
+}
+
+function addNavigationButtons() {
+    const preview = document.getElementById('preview');
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Anterior';
+    prevButton.addEventListener('click', () => {
+        currentFileIndex = (currentFileIndex - 1 + folderFiles.length) % folderFiles.length;
+        showFolderImage();
+    });
+    preview.appendChild(prevButton);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Siguiente';
+    nextButton.addEventListener('click', () => {
+        currentFileIndex = (currentFileIndex + 1) % folderFiles.length;
+        showFolderImage();
+    });
+    preview.appendChild(nextButton);
+}
 
 function loadProducts() {
     const productsContainer = document.querySelector('.products');
@@ -111,7 +175,7 @@ function addProduct() {
     let image = '';
     if (imageSource === 'url') {
         image = document.getElementById('imageURL').value;
-    } else {
+    } else if (imageSource === 'local') {
         const imageFile = document.getElementById('imageFile').files[0];
         const fileReader = new FileReader();
         fileReader.onload = (e) => {
@@ -128,7 +192,25 @@ function addProduct() {
             document.getElementById('preview').innerHTML = '';
         };
         fileReader.readAsDataURL(imageFile);
-        return; // Salir de la función para esperar que FileReader termine.
+        return;
+    } else {
+        const file = folderFiles[currentFileIndex];
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            image = e.target.result;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            products.push({ image, description, category });
+            localStorage.setItem('products', JSON.stringify(products));
+
+            loadProducts();
+            document.getElementById('productForm').reset();
+            document.getElementById('preview').innerHTML = '';
+        };
+        fileReader.readAsDataURL(file);
+        return;
     }
 
     const description = document.getElementById('description').value;

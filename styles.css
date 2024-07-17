@@ -1,14 +1,73 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.filter, .products {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.filter button {
+    margin: 0 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.product {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.product img, .product video {
+    max-width: 100%;
+    max-height: 400px; /* Double the current size */
+}
+
+.admin-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.admin-link:hover {
+    text-decoration: underline;
+}
+
 .preview {
     margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 200px;
+    width: 400px; /* Double the current size */
+    height: 400px; /* Double the current size */
     border: 1px solid #ddd;
 }
 
 .preview img, .preview video {
     max-width: 100%;
     max-height: 100%;
+}
+
+button.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-top: 10px;
+    display: block;
 }
