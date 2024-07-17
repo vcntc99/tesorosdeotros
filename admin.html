@@ -10,8 +10,16 @@
     <div class="container">
         <h1>Administrar Productos</h1>
         <form id="productForm">
-            <label for="image">URL de la Imagen/Video:</label>
-            <input type="text" id="image" required>
+            <label for="imageSource">Origen de la Imagen/Video:</label>
+            <select id="imageSource" required>
+                <option value="url">URL</option>
+                <option value="local">Local</option>
+            </select>
+            <label for="imageURL" id="imageURLLabel">URL de la Imagen/Video:</label>
+            <input type="text" id="imageURL">
+            <label for="imageFile" id="imageFileLabel" style="display:none;">Seleccionar Imagen/Video:</label>
+            <input type="file" id="imageFile" style="display:none;" accept="image/*,video/*">
+            <div id="preview" class="preview"></div>
             <label for="description">Descripción:</label>
             <input type="text" id="description" required>
             <label for="category">Categoría:</label>
