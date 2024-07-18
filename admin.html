@@ -7,35 +7,42 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Administrar Productos</h1>
-        <form id="productForm">
-            <label for="imageSource">Origen de la Imagen/Video:</label>
-            <select id="imageSource" required>
-                <option value="url">URL</option>
-                <option value="local">Local</option>
-            </select>
-            <label for="imageURL" id="imageURLLabel">URL de la Imagen/Video:</label>
-            <input type="text" id="imageURL">
-            <label for="imageFile" id="imageFileLabel" style="display:none;">Seleccionar Imagen/Video:</label>
-            <input type="file" id="imageFile" style="display:none;" accept="image/*,video/*">
-            <label for="imageFolder" id="imageFolderLabel" style="display:none;">Seleccionar Carpeta:</label>
-            <input type="file" id="imageFolder" style="display:none;" webkitdirectory directory multiple>
-            <div id="preview" class="preview"></div>
-            <label for="description">Descripción:</label>
-            <input type="text" id="description" required>
-            <label for="category">Categoría:</label>
-            <select id="category" required>
-                <option value="categoria1">Categoría 1</option>
-                <option value="categoria2">Categoría 2</option>
-                <option value="categoria3">Categoría 3</option>
-            </select>
-            <button type="submit">Agregar Producto</button>
-        </form>
-        <h2>Eliminar Productos</h2>
-        <div class="products"></div>
-        <a href="index.html" class="admin-link">Volver al Catálogo</a>
-    </div>
+    <h1>Administrar Productos</h1>
+    <form id="productForm">
+        <label for="imageSource">Origen de la imagen:</label>
+        <select id="imageSource">
+            <option value="url">URL</option>
+            <option value="local">Local</option>
+            <option value="folder">Carpeta</option>
+        </select>
+        <br>
+
+        <label for="imageURL" id="imageURLLabel" style="display: none;">URL de la imagen:</label>
+        <input type="text" id="imageURL" style="display: none;">
+        <br>
+
+        <label for="imageFile" id="imageFileLabel" style="display: none;">Seleccionar archivo:</label>
+        <input type="file" id="imageFile" style="display: none;">
+        <br>
+
+        <label for="imageFolder" id="imageFolderLabel" style="display: none;">Seleccionar carpeta:</label>
+        <input type="file" id="imageFolder" webkitdirectory directory multiple style="display: none;">
+        <br>
+
+        <label for="description">Descripción:</label>
+        <textarea id="description"></textarea>
+        <br>
+
+        <label for="category">Categoría:</label>
+        <input type="text" id="category">
+        <br>
+
+        <div id="preview"></div>
+        <br>
+
+        <button type="submit">Agregar Producto</button>
+    </form>
+    <div class="products"></div>
     <script src="script.js"></script>
 </body>
 </html>

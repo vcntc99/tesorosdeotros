@@ -138,12 +138,11 @@ function loadProducts() {
     productsContainer.innerHTML = '';
 
     const products = JSON.parse(localStorage.getItem('products')) || [];
+
     products.forEach((product, index) => {
         const productElement = document.createElement('div');
         productElement.classList.add('product');
-        productElement.setAttribute('data-category', product.category);
-
-        if (product.image.endsWith('.mp4')) {
+        if (product.imageType === 'video') {
             const videoElement = document.createElement('video');
             videoElement.setAttribute('controls', '');
             videoElement.setAttribute('src', product.image);
@@ -153,73 +152,66 @@ function loadProducts() {
             imgElement.setAttribute('src', product.image);
             productElement.appendChild(imgElement);
         }
-
         const descriptionElement = document.createElement('p');
         descriptionElement.textContent = product.description;
         productElement.appendChild(descriptionElement);
-
-        if (document.getElementById('productForm')) {
-            const deleteBtn = document.createElement('button');
-            deleteBtn.classList.add('delete-btn');
-            deleteBtn.textContent = 'Eliminar';
-            deleteBtn.addEventListener('click', () => deleteProduct(index));
-            productElement.appendChild(deleteBtn);
-        }
-
+        const categoryElement = document.createElement('p');
+        categoryElement.textContent = `Categoría: ${product.category}`;
+        productElement.appendChild(categoryElement);
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.classList.add('delete-btn');
+        deleteButton.addEventListener('click', () => {
+            deleteProduct(index);
+        });
+        productElement.appendChild(deleteButton);
         productsContainer.appendChild(productElement);
     });
 }
 
 function addProduct() {
     const imageSource = document.getElementById('imageSource').value;
-    let image = '';
-    if (imageSource === 'url') {
-        image = document.getElementById('imageURL').value;
-    } else if (imageSource === 'local') {
-        const imageFile = document.getElementById('imageFile').files[0];
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => {
-            image = e.target.result;
-            const description = document.getElementById('description').value;
-            const category = document.getElementById('category').value;
-
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            products.push({ image, description, category });
-            localStorage.setItem('products', JSON.stringify(products));
-
-            loadProducts();
-            document.getElementById('productForm').reset();
-            document.getElementById('preview').innerHTML = '';
-        };
-        fileReader.readAsDataURL(imageFile);
-        return;
-    } else {
-        const file = folderFiles[currentFileIndex];
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => {
-            image = e.target.result;
-            const description = document.getElementById('description').value;
-            const category = document.getElementById('category').value;
-
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            products.push({ image, description, category });
-            localStorage.setItem('products', JSON.stringify(products));
-
-            loadProducts();
-            document.getElementById('productForm').reset();
-            document.getElementById('preview').innerHTML = '';
-        };
-        fileReader.readAsDataURL(file);
-        return;
-    }
-
     const description = document.getElementById('description').value;
     const category = document.getElementById('category').value;
 
-    const products = JSON.parse(localStorage.getItem('products')) || [];
-    products.push({ image, description, category });
-    localStorage.setItem('products', JSON.stringify(products));
+    let image;
+    let imageType;
+    if (imageSource === 'url') {
+        image = document.getElementById('imageURL').value;
+        imageType = image.endsWith('.mp4') ? 'video' : 'image';
+    } else if (imageSource === 'local') {
+        const file = document.getElementById('imageFile').files[0];
+        if (file) {
+            imageType = file.type.startsWith('video') ? 'video' : 'image';
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                image = e.target.result;
+                saveProduct(image, imageType, description, category);
+            };
+            fileReader.readAsDataURL(file);
+            return; // Exit function to wait for FileReader
+        }
+    } else if (imageSource === 'folder') {
+        if (folderFiles.length > 0) {
+            const file = folderFiles[currentFileIndex];
+            imageType = file.type.startsWith('video') ? 'video' : 'image';
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                image = e.target.result;
+                saveProduct(image, imageType, description, category);
+            };
+            fileReader.readAsDataURL(file);
+            return; // Exit function to wait for FileReader
+        }
+    }
 
+    saveProduct(image, imageType, description, category);
+}
+
+function saveProduct(image, imageType, description, category) {
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+    products.push({ image, imageType, description, category });
+    localStorage.setItem('products', JSON.stringify(products));
     loadProducts();
     document.getElementById('productForm').reset();
     document.getElementById('preview').innerHTML = '';
@@ -233,16 +225,39 @@ function deleteProduct(index) {
 }
 
 function filterProducts(category) {
-    const products = document.querySelectorAll('.product');
-    products.forEach(product => {
-        if (category === 'all') {
-            product.style.display = 'block';
-        } else {
-            if (product.getAttribute('data-category') === category) {
-                product.style.display = 'block';
+    const productsContainer = document.querySelector('.products');
+    productsContainer.innerHTML = '';
+
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+
+    products.forEach((product, index) => {
+        if (category === 'all' || product.category === category) {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product');
+            if (product.imageType === 'video') {
+                const videoElement = document.createElement('video');
+                videoElement.setAttribute('controls', '');
+                videoElement.setAttribute('src', product.image);
+                productElement.appendChild(videoElement);
             } else {
-                product.style.display = 'none';
+                const imgElement = document.createElement('img');
+                imgElement.setAttribute('src', product.image);
+                productElement.appendChild(imgElement);
             }
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = product.description;
+            productElement.appendChild(descriptionElement);
+            const categoryElement = document.createElement('p');
+            categoryElement.textContent = `Categoría: ${product.category}`;
+            productElement.appendChild(categoryElement);
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.classList.add('delete-btn');
+            deleteButton.addEventListener('click', () => {
+                deleteProduct(index);
+            });
+            productElement.appendChild(deleteButton);
+            productsContainer.appendChild(productElement);
         }
     });
 }
